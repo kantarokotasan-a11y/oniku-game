@@ -470,8 +470,7 @@ const ITEMS=[
 let score=0,lives=3,combo=0,gameRunning=false;
 let carRow=1,items=[],spawnTimer=0,spawnInterval=1100;
 let lastTime=null,animFrame=null;
-let pressUp=false,pressDown=false,moveTimer=0;
-const MOVE_DELAY=130;
+
 
 const wrapEl=document.getElementById('game-wrap');
 const carEl=document.getElementById('car');
@@ -502,12 +501,6 @@ function loop(ts){
   if(!gameRunning)return;
   if(!lastTime)lastTime=ts;
   const dt=Math.min(ts-lastTime,50);lastTime=ts;
-  moveTimer+=dt;
-  if(moveTimer>=MOVE_DELAY){
-    moveTimer=0;
-    if(pressUp&&carRow>0){carRow--;setCarPos();}
-    else if(pressDown&&carRow<ROWS-1){carRow++;setCarPos();}
-  }
   spawnTimer+=dt;
   if(spawnTimer>=spawnInterval){spawnTimer=0;spawnItem();spawnInterval=Math.max(480,spawnInterval-8);}
 
@@ -588,25 +581,29 @@ async function endGame(){
   document.getElementById('gameover-overlay').style.display='flex';
 }
 
-// ══ ボタン操作 ══
+// ══ ボタン操作（タップ1回=1レーンのみ） ══
+function moveUp(){if(gameRunning&&carRow>0){carRow--;setCarPos();}}
+function moveDown(){if(gameRunning&&carRow<ROWS-1){carRow++;setCarPos();}}
+
 function setupBtn(id,isUp){
   const btn=document.getElementById(id);
-  const go=()=>{
-    if(isUp){if(gameRunning&&carRow>0){carRow--;setCarPos();}}
-    else{if(gameRunning&&carRow<ROWS-1){carRow++;setCarPos();}}
+  const dn=e=>{
+    e.preventDefault();
+    btn.classList.add('pressing');
+    if(isUp)moveUp();else moveDown();
   };
-  const dn=e=>{e.preventDefault();btn.classList.add('pressing');if(isUp)pressUp=true;else pressDown=true;go();};
-  const up=e=>{e.preventDefault();btn.classList.remove('pressing');if(isUp)pressUp=false;else pressDown=false;};
-  btn.addEventListener('touchstart',dn,{passive:false});btn.addEventListener('touchend',up,{passive:false});
-  btn.addEventListener('mousedown',dn);btn.addEventListener('mouseup',up);
+  const up=e=>{e.preventDefault();btn.classList.remove('pressing');};
+  btn.addEventListener('touchstart',dn,{passive:false});
+  btn.addEventListener('touchend',up,{passive:false});
+  btn.addEventListener('mousedown',dn);
+  btn.addEventListener('mouseup',up);
 }
 setupBtn('btn-up',true);setupBtn('btn-down',false);
 
 document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowUp'){pressUp=true;if(gameRunning&&carRow>0){carRow--;setCarPos();}}
-  if(e.key==='ArrowDown'){pressDown=true;if(gameRunning&&carRow<ROWS-1){carRow++;setCarPos();}}
+  if(e.key==='ArrowUp')moveUp();
+  if(e.key==='ArrowDown')moveDown();
 });
-document.addEventListener('keyup',e=>{if(e.key==='ArrowUp')pressUp=false;if(e.key==='ArrowDown')pressDown=false;});
 
 let swY=null;
 wrapEl.addEventListener('touchstart',e=>{if(e.target.id==='btn-up'||e.target.id==='btn-down')return;swY=e.touches[0].clientY;},{passive:true});
