@@ -9,166 +9,276 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{width:100%;height:100%;overflow:hidden;background:#1a1a2e;font-family:'M PLUS Rounded 1c',sans-serif;user-select:none;touch-action:none;}
 
-#rotate-msg{display:none;position:fixed;inset:0;background:#1a1a2e;color:#fff;flex-direction:column;align-items:center;justify-content:center;font-size:18px;font-weight:700;z-index:9999;text-align:center;gap:16px;}
-#rotate-msg .icon{font-size:60px;animation:rotHint 1.5s ease-in-out infinite;}
-@keyframes rotHint{0%,100%{transform:rotate(0deg);}50%{transform:rotate(90deg);}}
-@media(orientation:portrait){#rotate-msg{display:flex;}#app{display:none;}}
+/* ══════════════════════════════
+   ログイン画面（縦向き）
+══════════════════════════════ */
+#login-screen{
+  position:fixed;inset:0;
+  background:linear-gradient(160deg,#1a1a2e 0%,#2d1b4e 50%,#1a3a2e 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:500;padding:24px;
+}
+#login-screen .logo-area{text-align:center;margin-bottom:24px;}
+#login-screen .logo-icon{font-size:64px;line-height:1;margin-bottom:8px;}
+#login-screen .logo-title{
+  font-family:'Nunito',sans-serif;font-size:28px;font-weight:900;
+  color:#FFD600;text-shadow:2px 2px 0 rgba(0,0,0,0.4);letter-spacing:2px;
+}
+#login-screen .logo-sub{font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px;}
+.login-card{
+  background:rgba(255,255,255,0.95);
+  border-radius:20px;border:3px solid #FFD600;
+  padding:20px 20px 16px;width:100%;max-width:320px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.login-rules{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;
+  margin-bottom:14px;
+}
+.rule-chip{
+  background:#FFF8E1;border:1.5px solid #FFE082;border-radius:10px;
+  padding:6px 8px;font-size:11px;font-weight:700;text-align:center;
+  line-height:1.4;
+}
+.rule-chip.meat{border-color:#E74C3C;background:#FFF0EE;color:#C0392B;}
+.rule-chip.veg{border-color:#4CAF50;background:#F1F8E9;color:#2E7D32;}
+.rule-chip.bad{border-color:#FF9800;background:#FFF3E0;color:#E65100;}
+.lbl{font-size:11px;font-weight:700;color:#795548;margin-bottom:4px;display:block;}
+.ov-input{width:100%;border:2px solid #FFD600;border-radius:10px;padding:9px 12px;font-size:15px;font-family:'M PLUS Rounded 1c',sans-serif;margin-bottom:8px;outline:none;background:#FFFDE7;}
+.ov-input:focus{border-color:#F9A825;}
+.ov-err{color:#C0392B;font-size:11px;text-align:center;min-height:16px;margin-bottom:6px;}
+.ov-btn{background:#F9A825;border:none;border-radius:12px;padding:12px 0;font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;color:#fff;cursor:pointer;box-shadow:0 4px 0 #E65100;width:100%;margin-bottom:6px;}
+.ov-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #E65100;}
+.ov-btn.secondary{background:#78909C;box-shadow:0 4px 0 #455A64;font-size:14px;padding:10px 0;}
 
-#app{position:fixed;inset:0;overflow:hidden;}
-#sky{position:absolute;inset:0;background:linear-gradient(180deg,#4AB8F0 0%,#90D8F5 55%,#B8EE90 100%);}
-.cloud{position:absolute;background:rgba(255,255,255,0.88);border-radius:40px;animation:cloudMove linear infinite;}
-@keyframes cloudMove{from{left:108%;}to{left:-220px;}}
+/* ══════════════════════════════
+   ゲーム画面（横向き）
+══════════════════════════════ */
+#app{
+  position:fixed;inset:0;overflow:hidden;
+  display:none; /* ログイン後に表示 */
+}
+
+/* 横向き強制ラッパー */
+#game-wrap{
+  position:absolute;
+  transform-origin:top left;
+  overflow:hidden;
+}
+
+/* 空 */
+#sky{position:absolute;inset:0;background:linear-gradient(180deg,#3A9FD8 0%,#7DCEF5 50%,#A8EE80 100%);}
+.cloud{position:absolute;background:rgba(255,255,255,0.9);border-radius:50px;animation:cloudMove linear infinite;}
+@keyframes cloudMove{from{left:108%;}to{left:-250px;}}
 .mtn{position:absolute;bottom:0;width:0;height:0;border-left:solid transparent;border-right:solid transparent;border-bottom:solid;}
-#mountains{position:absolute;bottom:35%;left:0;right:0;height:110px;overflow:hidden;}
+#mountains{position:absolute;bottom:42%;left:0;right:0;height:120px;overflow:hidden;}
 
-#ground{position:absolute;bottom:0;left:0;right:0;height:35%;}
-#grass-strip{position:absolute;top:0;left:0;right:0;height:14px;background:#4CAF50;z-index:2;}
-#road-body{position:absolute;top:14px;left:0;right:0;bottom:0;background:#4A5060;}
-#lane-lines{position:absolute;top:14px;left:0;right:0;bottom:0;}
-.lane-divider{position:absolute;left:0;right:0;height:3px;background:repeating-linear-gradient(90deg,#FFD600 0,#FFD600 40px,transparent 40px,transparent 90px);animation:laneMove .4s linear infinite;opacity:0.55;}
-@keyframes laneMove{from{background-position:0 0;}to{background-position:-130px 0;}}
-#road-curb{position:absolute;top:14px;left:0;right:0;height:8px;background:repeating-linear-gradient(90deg,#eee 0,#eee 22px,#E53935 22px,#E53935 44px);z-index:3;}
-.tree{position:absolute;font-size:30px;bottom:calc(35% + 10px);animation:treeMove linear infinite;z-index:3;}
+/* 地面：画面の42%を道路に */
+#ground{position:absolute;bottom:0;left:0;right:0;height:42%;}
+#grass-strip{position:absolute;top:0;left:0;right:0;height:16px;background:linear-gradient(180deg,#66BB6A,#43A047);z-index:2;}
+#road-body{
+  position:absolute;top:16px;left:0;right:0;bottom:0;
+  background:linear-gradient(180deg,#546E7A 0%,#455A64 100%);
+}
+
+/* レーン区切り */
+#lane-lines{position:absolute;top:16px;left:0;right:0;bottom:0;z-index:3;}
+.lane-divider{
+  position:absolute;left:0;right:0;height:4px;
+  background:repeating-linear-gradient(90deg,#FFD600 0,#FFD600 50px,transparent 50px,transparent 110px);
+  animation:laneAnim .5s linear infinite;
+}
+@keyframes laneAnim{from{background-position:0 0;}to{background-position:-160px 0;}}
+
+/* レーン番号インジケーター（左端） */
+.lane-indicator{
+  position:absolute;left:8px;
+  width:28px;height:28px;
+  background:rgba(0,0,0,0.35);border:2px solid rgba(255,255,255,0.3);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:900;color:rgba(255,255,255,0.8);
+  z-index:4;transform:translateY(-50%);
+}
+
+/* 縁石 */
+#road-curb{position:absolute;top:16px;left:0;right:0;height:9px;background:repeating-linear-gradient(90deg,#eee 0,#eee 22px,#E53935 22px,#E53935 44px);z-index:5;}
+#road-curb-bottom{position:absolute;bottom:0;left:0;right:0;height:9px;background:repeating-linear-gradient(90deg,#eee 0,#eee 22px,#E53935 22px,#E53935 44px);z-index:5;}
+
+/* 木 */
+.tree{position:absolute;font-size:32px;animation:treeMove linear infinite;z-index:3;}
 @keyframes treeMove{from{left:108%;}to{left:-60px;}}
 
-#hud{position:absolute;top:6px;left:10px;display:flex;align-items:center;gap:10px;z-index:80;pointer-events:none;}
-#logo{font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;color:#fff;background:rgba(0,0,0,0.28);border-radius:14px;padding:3px 10px;}
-#score-box{background:rgba(0,0,0,0.28);border-radius:14px;padding:3px 12px;text-align:center;}
-#score-label{font-size:8px;color:rgba(255,255,255,0.75);font-weight:700;letter-spacing:1px;}
-#score-v{font-size:20px;font-weight:900;color:#fff;line-height:1.1;}
+/* HUD */
+#hud{position:absolute;top:6px;left:10px;display:flex;align-items:center;gap:8px;z-index:80;pointer-events:none;}
+#logo{font-family:'Nunito',sans-serif;font-size:12px;font-weight:900;color:#fff;background:rgba(0,0,0,0.3);border-radius:12px;padding:3px 10px;}
+#score-box{background:rgba(0,0,0,0.3);border-radius:12px;padding:3px 12px;text-align:center;}
+#score-label{font-size:8px;color:rgba(255,255,255,0.7);font-weight:700;letter-spacing:1px;}
+#score-v{font-size:20px;font-weight:900;color:#FFD600;line-height:1.1;}
 #lives{display:flex;gap:2px;align-items:center;}
-.life{font-size:18px;transition:opacity .2s;}
-.life.lost{opacity:.15;filter:grayscale(1);}
-#player-tag{background:rgba(0,0,0,0.28);border-radius:14px;padding:3px 10px;font-size:11px;font-weight:700;color:#FFD600;}
+.life{font-size:17px;transition:opacity .2s,transform .2s;}
+.life.lost{opacity:.15;filter:grayscale(1);transform:scale(0.8);}
+#player-tag{background:rgba(0,0,0,0.3);border-radius:12px;padding:3px 10px;font-size:11px;font-weight:700;color:#FFD600;}
 
-#combo-display{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:16px;font-weight:900;color:#FFD600;text-shadow:2px 2px 0 rgba(0,0,0,0.4);z-index:80;opacity:0;transition:opacity .2s;white-space:nowrap;pointer-events:none;}
+/* コンボ */
+#combo-display{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:15px;font-weight:900;color:#FFD600;text-shadow:2px 2px 0 rgba(0,0,0,0.5);z-index:80;opacity:0;transition:opacity .2s;white-space:nowrap;pointer-events:none;}
 #combo-display.show{opacity:1;}
 
-#car{position:absolute;left:60px;z-index:30;transition:top .1s cubic-bezier(.4,0,.2,1);width:90px;height:auto;filter:drop-shadow(3px 4px 6px rgba(0,0,0,0.4));}
+/* 牛キャラ（透過PNG） */
+#car{
+  position:absolute;left:55px;z-index:30;
+  width:100px;height:auto;
+  transition:top .1s cubic-bezier(.4,0,.2,1);
+  filter:drop-shadow(4px 6px 6px rgba(0,0,0,0.35));
+  image-rendering:auto;
+}
 
-.item{position:absolute;font-size:34px;line-height:1;z-index:25;pointer-events:none;}
+/* アイテム */
+.item{position:absolute;font-size:36px;line-height:1;z-index:25;pointer-events:none;}
 
-.ctrl-btn{position:absolute;width:68px;height:68px;border-radius:50%;border:3px solid rgba(255,255,255,0.7);background:rgba(255,255,255,0.25);backdrop-filter:blur(4px);font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.25);transition:transform .08s,background .08s;z-index:80;bottom:14px;}
-.ctrl-btn:active,.ctrl-btn.pressing{transform:scale(0.87);background:rgba(255,255,255,0.55);}
-#btn-up{left:14px;}
-#btn-down{right:14px;}
+/* ボタン */
+.ctrl-btn{
+  position:absolute;width:72px;height:72px;border-radius:50%;
+  border:3px solid rgba(255,255,255,0.75);
+  background:rgba(255,255,255,0.22);backdrop-filter:blur(6px);
+  font-size:26px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(0,0,0,0.3);
+  transition:transform .08s,background .08s;z-index:80;bottom:16px;
+}
+.ctrl-btn:active,.ctrl-btn.pressing{transform:scale(0.87);background:rgba(255,255,255,0.5);}
+#btn-up{left:16px;}
+#btn-down{right:16px;}
 
-#ranking-btn{position:absolute;top:6px;right:14px;z-index:80;background:rgba(0,0,0,0.3);border:2px solid rgba(255,215,0,0.5);border-radius:14px;padding:5px 12px;color:#FFD600;font-size:12px;font-weight:900;cursor:pointer;font-family:'M PLUS Rounded 1c',sans-serif;}
+/* ランキングボタン */
+#ranking-btn{position:absolute;top:6px;right:14px;z-index:80;background:rgba(0,0,0,0.3);border:2px solid rgba(255,215,0,0.5);border-radius:12px;padding:5px 12px;color:#FFD600;font-size:11px;font-weight:900;cursor:pointer;font-family:'M PLUS Rounded 1c',sans-serif;}
 
+/* BGMボタン */
+#bgm-btn{position:absolute;top:44px;right:14px;z-index:80;background:rgba(0,0,0,0.3);border:2px solid rgba(255,255,255,0.3);border-radius:12px;padding:4px 10px;color:#fff;font-size:11px;font-weight:900;cursor:pointer;font-family:'M PLUS Rounded 1c',sans-serif;}
+
+/* フラッシュ */
 #flash{position:absolute;inset:0;background:rgba(255,40,40,0.4);pointer-events:none;opacity:0;z-index:90;transition:opacity .07s;}
 #flash.show{opacity:1;}
 
-.pop{position:absolute;font-weight:900;font-size:19px;pointer-events:none;z-index:99;animation:popUp .75s ease-out forwards;text-shadow:1px 1px 0 rgba(0,0,0,0.35);white-space:nowrap;}
-@keyframes popUp{0%{opacity:1;transform:translateY(0) scale(1);}45%{transform:translateY(-24px) scale(1.2);}100%{opacity:0;transform:translateY(-56px) scale(0.8);}}
+/* ポップ */
+.pop{position:absolute;font-weight:900;font-size:20px;pointer-events:none;z-index:99;animation:popUp .75s ease-out forwards;text-shadow:1px 1px 0 rgba(0,0,0,0.4);white-space:nowrap;}
+@keyframes popUp{0%{opacity:1;transform:translateY(0) scale(1);}45%{transform:translateY(-26px) scale(1.2);}100%{opacity:0;transform:translateY(-58px) scale(0.8);}}
 
-.overlay{position:absolute;inset:0;background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;z-index:200;}
-.ov-box{background:linear-gradient(160deg,#FFFDE7,#FFF8E1);border:4px solid #F9A825;border-radius:22px;padding:20px 24px;width:min(500px,92vw);box-shadow:0 10px 40px rgba(0,0,0,0.5);}
-.ov-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;color:#E65100;margin-bottom:12px;text-align:center;}
-.ov-btn{background:#F9A825;border:none;border-radius:12px;padding:11px 0;font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;color:#fff;cursor:pointer;box-shadow:0 4px 0 #E65100;transition:transform .1s,box-shadow .1s;width:100%;margin-top:8px;}
-.ov-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #E65100;}
-.ov-btn.secondary{background:#78909C;box-shadow:0 4px 0 #455A64;}
-.ov-input{width:100%;border:2px solid #F9A825;border-radius:10px;padding:9px 12px;font-size:15px;font-family:'M PLUS Rounded 1c',sans-serif;margin-bottom:8px;outline:none;}
-.ov-input:focus{border-color:#E65100;}
-.ov-err{color:#C0392B;font-size:12px;text-align:center;min-height:18px;margin-bottom:4px;}
+/* オーバーレイ（ゲーム内） */
+.g-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:200;}
+.g-box{background:linear-gradient(160deg,#FFFDE7,#FFF8E1);border:4px solid #F9A825;border-radius:20px;padding:18px 22px;width:min(480px,90%);box-shadow:0 10px 40px rgba(0,0,0,0.5);}
+.g-title{font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;color:#E65100;margin-bottom:10px;text-align:center;}
+.g-btn{background:#F9A825;border:none;border-radius:11px;padding:11px 0;font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;color:#fff;cursor:pointer;box-shadow:0 4px 0 #E65100;width:100%;margin-top:7px;}
+.g-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #E65100;}
+.g-btn.sec{background:#78909C;box-shadow:0 4px 0 #455A64;}
+.g-row{display:flex;gap:14px;align-items:flex-start;}
+.g-left{flex:1;}
+.g-right{flex:1;font-size:11px;color:#795548;line-height:2;}
+.g-score{font-size:42px;font-weight:900;color:#333;text-align:center;margin:4px 0;}
+.g-hi{font-size:11px;color:#A0826D;text-align:center;margin-bottom:6px;}
 
+/* ランキング */
 .rank-table{width:100%;border-collapse:collapse;margin-top:8px;}
-.rank-table th{background:#F9A825;color:#fff;padding:6px 8px;font-size:12px;text-align:left;}
-.rank-table td{padding:6px 8px;font-size:13px;border-bottom:1px solid #FFE082;}
+.rank-table th{background:#F9A825;color:#fff;padding:6px 8px;font-size:11px;text-align:left;}
+.rank-table td{padding:6px 8px;font-size:12px;border-bottom:1px solid #FFE082;}
 .rank-table tr:nth-child(even) td{background:#FFFDE7;}
 .rank-gold td{background:#FFF9C4!important;font-weight:900;}
 .rank-silver td{background:#F5F5F5!important;}
 .rank-bronze td{background:#FBE9E7!important;}
-
-.ov-row{display:flex;gap:16px;align-items:flex-start;}
-.ov-left{flex:1;}
-.ov-right{flex:1;font-size:12px;color:#795548;line-height:2.1;}
-.ov-score-big{font-size:44px;font-weight:900;color:#333;text-align:center;margin:4px 0;}
-.ov-hi{font-size:11px;color:#A0826D;text-align:center;margin-bottom:8px;}
 </style>
 </head>
 <body>
 
-<div id="rotate-msg"><div class="icon">📱</div><div>スマホを横向きにしてね！</div></div>
-
-<div id="app">
-  <div id="sky"></div>
-  <div id="mountains"></div>
-  <div id="ground">
-    <div id="grass-strip"></div>
-    <div id="road-curb"></div>
-    <div id="road-body"></div>
-    <div id="lane-lines"></div>
+<!-- ══ ログイン画面（縦向き） ══ -->
+<div id="login-screen">
+  <div class="logo-area">
+    <div class="logo-icon">🐄🚗</div>
+    <div class="logo-title">牛さんドライブ</div>
+    <div class="logo-sub">スーパーの肉屋さんゲーム</div>
   </div>
-
-  <div id="hud">
-    <div id="logo">🐄 牛さんドライブ</div>
-    <div id="score-box"><div id="score-label">スコア</div><div id="score-v">0</div></div>
-    <div id="lives">
-      <span class="life" id="l0">❤️</span>
-      <span class="life" id="l1">❤️</span>
-      <span class="life" id="l2">❤️</span>
+  <div class="login-card">
+    <div class="login-rules">
+      <div class="rule-chip meat">🥩🍗🌭<br>お肉→高得点！</div>
+      <div class="rule-chip veg">🥦🥕🐟<br>野菜・魚→低得点</div>
+      <div class="rule-chip bad" style="grid-column:1/-1;">🚧🪨🚜⚠️🐕　障害物→減点＆ライフ減！</div>
     </div>
-    <div id="player-tag">👤 ゲスト</div>
-  </div>
-
-  <div id="combo-display"></div>
-  <img id="car" src="1E30B303-0597-4699-8C73-4262000707E0.PNG" alt="cow">
-  <div id="flash"></div>
-
-  <button class="ctrl-btn" id="btn-up">⬆️</button>
-  <button class="ctrl-btn" id="btn-down">⬇️</button>
-  <button id="ranking-btn" onclick="showRanking()">🏆 ランキング</button>
-
-  <!-- ログイン -->
-  <div class="overlay" id="login-overlay">
-    <div class="ov-box" style="max-width:360px;">
-      <div style="text-align:center;font-size:48px;margin-bottom:4px;">🐄🚗</div>
-      <div class="ov-title">牛さんドライブ</div>
-      <div style="font-size:12px;color:#795548;line-height:1.9;margin-bottom:12px;text-align:center;">
-        🥩🍗🌭 <b style="color:#C0392B">お肉→高得点！</b>　
-        🥦🥕🐟 <b style="color:#2E7D4F">野菜・魚介→低得点</b><br>
-        🚧🪨🚜 <b style="color:#E65100">障害物→減点＆ライフ減！</b>
-      </div>
-      <input class="ov-input" id="input-nick" type="text" placeholder="ニックネーム（必須）" maxlength="12">
-      <input class="ov-input" id="input-pass" type="password" placeholder="パスワード（4文字以上）" maxlength="20">
-      <div class="ov-err" id="login-err"></div>
-      <button class="ov-btn" onclick="doLogin()">ログイン / 新規登録</button>
-      <button class="ov-btn secondary" onclick="guestPlay()">ゲストでプレイ（記録なし）</button>
-    </div>
-  </div>
-
-  <!-- ゲームオーバー -->
-  <div class="overlay" id="gameover-overlay" style="display:none;">
-    <div class="ov-box">
-      <div class="ov-row">
-        <div class="ov-left">
-          <div style="text-align:center;font-size:44px;">🐄💨</div>
-          <div class="ov-title" id="go-title">ゲームオーバー！</div>
-          <div class="ov-score-big" id="go-score">0</div>
-          <div class="ov-hi" id="go-hi"></div>
-          <button class="ov-btn" onclick="restartGame()">もう一度！</button>
-          <button class="ov-btn secondary" onclick="showRanking()">🏆 ランキング</button>
-        </div>
-        <div class="ov-right">
-          🥩🍗🌭<br><b style="color:#C0392B">お肉 → 高得点！</b><br>
-          🥦🥕🌽🐟🦑🦐<br><b style="color:#2E7D4F">野菜・魚介 → 低得点</b><br>
-          🚧🪨🚜🐕⚠️<br><b style="color:#E65100">障害物 → 減点＆ライフ減</b>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ランキング -->
-  <div class="overlay" id="ranking-overlay" style="display:none;">
-    <div class="ov-box">
-      <div class="ov-title">🏆 ランキング TOP10</div>
-      <div id="ranking-content" style="max-height:52vh;overflow-y:auto;"></div>
-      <button class="ov-btn" onclick="closeRanking()">とじる</button>
-    </div>
+    <span class="lbl">ニックネーム</span>
+    <input class="ov-input" id="input-nick" type="text" placeholder="例：たろう" maxlength="12" autocomplete="off">
+    <span class="lbl">パスワード（4文字以上）</span>
+    <input class="ov-input" id="input-pass" type="password" placeholder="パスワード" maxlength="20">
+    <div class="ov-err" id="login-err"></div>
+    <button class="ov-btn" onclick="doLogin()">ログイン / 新規登録</button>
+    <button class="ov-btn secondary" onclick="guestPlay()">ゲストでプレイ（記録なし）</button>
   </div>
 </div>
 
+<!-- ══ ゲーム画面（横向き） ══ -->
+<div id="app">
+  <div id="game-wrap">
+    <div id="sky"></div>
+    <div id="mountains"></div>
+    <div id="ground">
+      <div id="grass-strip"></div>
+      <div id="road-curb"></div>
+      <div id="road-body"></div>
+      <div id="lane-lines"></div>
+      <div id="road-curb-bottom"></div>
+    </div>
+
+    <div id="hud">
+      <div id="logo">🐄 牛さんドライブ</div>
+      <div id="score-box"><div id="score-label">スコア</div><div id="score-v">0</div></div>
+      <div id="lives">
+        <span class="life" id="l0">❤️</span>
+        <span class="life" id="l1">❤️</span>
+        <span class="life" id="l2">❤️</span>
+      </div>
+      <div id="player-tag">👤 ゲスト</div>
+    </div>
+
+    <div id="combo-display"></div>
+    <img id="car" src="cow.png" alt="🐄">
+    <div id="flash"></div>
+
+    <button class="ctrl-btn" id="btn-up">⬆️</button>
+    <button class="ctrl-btn" id="btn-down">⬇️</button>
+    <button id="ranking-btn" onclick="showRanking()">🏆 ランキング</button>
+    <button id="bgm-btn" onclick="toggleBGM()">🎵 ON</button>
+
+    <!-- ゲームオーバー -->
+    <div class="g-overlay" id="gameover-overlay" style="display:none;">
+      <div class="g-box">
+        <div class="g-row">
+          <div class="g-left">
+            <div style="text-align:center;font-size:42px;">🐄💨</div>
+            <div class="g-title" id="go-title">ゲームオーバー！</div>
+            <div class="g-score" id="go-score">0</div>
+            <div class="g-hi" id="go-hi"></div>
+            <button class="g-btn" onclick="restartGame()">もう一度！</button>
+            <button class="g-btn sec" onclick="showRanking()">🏆 ランキング</button>
+          </div>
+          <div class="g-right">
+            🥩🍗🌭<br><b style="color:#C0392B">お肉 → 高得点！</b><br>
+            🥦🥕🌽🐟🦑🦐<br><b style="color:#2E7D4F">野菜・魚介 → 低得点</b><br>
+            🚧🪨🚜🐕⚠️<br><b style="color:#E65100">障害物 → 減点＆ライフ減</b>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ランキング -->
+    <div class="g-overlay" id="ranking-overlay" style="display:none;">
+      <div class="g-box">
+        <div class="g-title">🏆 ランキング TOP10</div>
+        <div id="ranking-content" style="max-height:50vh;overflow-y:auto;"></div>
+        <button class="g-btn" onclick="closeRanking()">とじる</button>
+      </div>
+    </div>
+  </div><!-- /game-wrap -->
+</div><!-- /app -->
+
 <script>
+// ══ Supabase ══
 const SB_URL='https://hyfltnwwtpmtcyxumuxo.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5Zmx0bnd3dHBtdGN5eHVtdXhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2ODU3NDgsImV4cCI6MjA5MjI2MTc0OH0.2xzJpsgWeykT366Rf2r7hYVF4_XiNyFEeOC7UYTwii8';
 const TABLE='cow_drive_rankings';
@@ -179,10 +289,10 @@ async function sbFetch(path,options={}){
     ...options
   });
   if(!res.ok)throw new Error(await res.text());
-  const txt=await res.text();
-  return txt?JSON.parse(txt):null;
+  const txt=await res.text();return txt?JSON.parse(txt):null;
 }
 
+// ══ プレイヤー ══
 let currentNick='ゲスト',currentPass='',isGuest=true;
 let hiScore=parseInt(localStorage.getItem('cowdrive_hi')||'0');
 
@@ -195,59 +305,105 @@ async function doLogin(){
   errEl.textContent='確認中…';
   try{
     const existing=await sbFetch(`${TABLE}?nickname=eq.${encodeURIComponent(nick)}&select=nickname,password&limit=1`);
-    if(existing&&existing.length>0){
-      if(existing[0].password!==pass){errEl.textContent='パスワードが違います';return;}
-    }
+    if(existing&&existing.length>0&&existing[0].password!==pass){errEl.textContent='パスワードが違います';return;}
     currentNick=nick;currentPass=pass;isGuest=false;
-    document.getElementById('player-tag').textContent='👤 '+nick;
-    document.getElementById('login-overlay').style.display='none';
-    startGame();
+    launchGame();
   }catch(e){errEl.textContent='エラーが発生しました';console.error(e);}
 }
 
 function guestPlay(){
-  currentNick='ゲスト';isGuest=true;
-  document.getElementById('player-tag').textContent='👤 ゲスト';
-  document.getElementById('login-overlay').style.display='none';
-  startGame();
+  currentNick='ゲスト';isGuest=true;launchGame();
 }
 
+// ══ 横向きでゲーム起動 ══
+function launchGame(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('player-tag').textContent='👤 '+currentNick;
+  applyOrientation();
+  startGame();
+  initBGM();
+}
+
+// ══ 横向き強制 ══
+function applyOrientation(){
+  const wrap=document.getElementById('game-wrap');
+  const isPortrait=window.innerHeight>window.innerWidth;
+  if(isPortrait){
+    // 縦→横に回転
+    const w=window.innerHeight,h=window.innerWidth;
+    wrap.style.width=w+'px';
+    wrap.style.height=h+'px';
+    wrap.style.transform=`rotate(90deg) translateY(-${h}px)`;
+    wrap.style.transformOrigin='top left';
+  }else{
+    wrap.style.width=window.innerWidth+'px';
+    wrap.style.height=window.innerHeight+'px';
+    wrap.style.transform='none';
+    wrap.style.transformOrigin='top left';
+  }
+  buildBg();
+  setCarPos();
+}
+window.addEventListener('resize',()=>{if(gameRunning)applyOrientation();});
+window.addEventListener('orientationchange',()=>setTimeout(applyOrientation,300));
+
+function getGameW(){
+  const wrap=document.getElementById('game-wrap');
+  return parseInt(wrap.style.width)||window.innerWidth;
+}
+function getGameH(){
+  const wrap=document.getElementById('game-wrap');
+  return parseInt(wrap.style.height)||window.innerHeight;
+}
+
+// ══ BGM ══
+let bgmAudio=null,bgmOn=true;
+function initBGM(){
+  if(bgmAudio)return;
+  bgmAudio=new Audio('bgm.mp3');
+  bgmAudio.loop=true;bgmAudio.volume=0.6;
+  bgmAudio.play().catch(()=>{});
+}
+function toggleBGM(){
+  if(!bgmAudio)return;
+  bgmOn=!bgmOn;
+  if(bgmOn){bgmAudio.play();document.getElementById('bgm-btn').textContent='🎵 ON';}
+  else{bgmAudio.pause();document.getElementById('bgm-btn').textContent='🔇 OFF';}
+}
+
+// ══ スコア ══
 async function submitScore(nick,pass,score){
   if(isGuest)return;
   try{
     const existing=await sbFetch(`${TABLE}?nickname=eq.${encodeURIComponent(nick)}&select=id,score&limit=1`);
     if(existing&&existing.length>0){
-      if(score>existing[0].score){
-        await sbFetch(`${TABLE}?id=eq.${existing[0].id}`,{method:'PATCH',body:JSON.stringify({score,created_at:new Date().toISOString()})});
-      }
+      if(score>existing[0].score) await sbFetch(`${TABLE}?id=eq.${existing[0].id}`,{method:'PATCH',body:JSON.stringify({score,created_at:new Date().toISOString()})});
     }else{
       await sbFetch(TABLE,{method:'POST',body:JSON.stringify({nickname:nick,password:pass,score})});
     }
-  }catch(e){console.error('スコア送信失敗',e);}
+  }catch(e){console.error(e);}
 }
 
+// ══ ランキング ══
 async function showRanking(){
   document.getElementById('ranking-overlay').style.display='flex';
-  document.getElementById('ranking-content').innerHTML='<div style="text-align:center;padding:20px;">読み込み中…</div>';
+  document.getElementById('ranking-content').innerHTML='<div style="text-align:center;padding:16px;">読み込み中…</div>';
   try{
     const data=await sbFetch(`${TABLE}?select=nickname,score&order=score.desc&limit=10`);
-    if(!data||data.length===0){document.getElementById('ranking-content').innerHTML='<div style="text-align:center;padding:20px;color:#999;">まだ記録がありません</div>';return;}
-    const medals=['🥇','🥈','🥉'];
-    const rowCls=['rank-gold','rank-silver','rank-bronze'];
+    if(!data||data.length===0){document.getElementById('ranking-content').innerHTML='<div style="text-align:center;padding:16px;color:#999;">まだ記録がありません</div>';return;}
+    const M=['🥇','🥈','🥉'],C=['rank-gold','rank-silver','rank-bronze'];
     let html='<table class="rank-table"><thead><tr><th>順位</th><th>ニックネーム</th><th>スコア</th></tr></thead><tbody>';
     data.forEach((r,i)=>{
-      const cls=i<3?rowCls[i]:'';
-      const rank=i<3?medals[i]:(i+1)+'位';
-      html+=`<tr class="${cls}"><td>${rank}</td><td>${esc(r.nickname)}</td><td>${r.score.toLocaleString()}</td></tr>`;
+      html+=`<tr class="${i<3?C[i]:''}""><td>${i<3?M[i]:(i+1)+'位'}</td><td>${esc(r.nickname)}</td><td>${r.score.toLocaleString()}</td></tr>`;
     });
-    html+='</tbody></table>';
-    document.getElementById('ranking-content').innerHTML=html;
-  }catch(e){document.getElementById('ranking-content').innerHTML='<div style="text-align:center;padding:20px;color:#E74C3C;">読み込みに失敗しました</div>';}
+    document.getElementById('ranking-content').innerHTML=html+'</tbody></table>';
+  }catch(e){document.getElementById('ranking-content').innerHTML='<div style="text-align:center;padding:16px;color:#E74C3C;">読み込み失敗</div>';}
 }
 function closeRanking(){document.getElementById('ranking-overlay').style.display='none';}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
-// ── ゲーム ──
+// ══ ゲーム定数 ══
 const ROWS=4;
 const ITEMS=[
   {emoji:'🥩',type:'meat',pts:80},{emoji:'🍗',type:'meat',pts:70},{emoji:'🌭',type:'meat',pts:60},
@@ -264,56 +420,69 @@ let pressUp=false,pressDown=false,moveTimer=0;
 const MOVE_DELAY=140;
 
 const appEl=document.getElementById('app');
+const wrapEl=document.getElementById('game-wrap');
 const carEl=document.getElementById('car');
 const flashEl=document.getElementById('flash');
 const comboEl=document.getElementById('combo-display');
 
+// レーンY（道路は画面42%）
 function getRowY(row){
-  const h=appEl.clientHeight;
-  const groundTop=h*0.65;
-  const roadH=h*0.35;
-  const usableH=roadH-14;
-  const laneH=usableH/ROWS;
-  return groundTop+14+laneH*row+laneH/2-26;
+  const h=getGameH();
+  const groundTop=h*0.58; // 空は58%
+  const roadH=h*0.42;
+  const usable=roadH-16-9; // 上縁石16px, 下縁石9px
+  const laneH=usable/ROWS;
+  return groundTop+16+laneH*row+laneH/2-28;
 }
 
 function setCarPos(){carEl.style.top=getRowY(carRow)+'px';}
 
 function buildLaneLines(){
   const ll=document.getElementById('lane-lines');ll.innerHTML='';
-  const h=appEl.clientHeight;
-  const usableH=h*0.35-14;
-  const laneH=usableH/ROWS;
+  const h=getGameH();
+  const roadH=h*0.42;
+  const usable=roadH-16-9;
+  const laneH=usable/ROWS;
   for(let i=1;i<ROWS;i++){
-    const d=document.createElement('div');
-    d.className='lane-divider';d.style.top=(laneH*i)+'px';
-    ll.appendChild(d);
+    const d=document.createElement('div');d.className='lane-divider';
+    d.style.top=(laneH*i)+'px';ll.appendChild(d);
+  }
+  // レーン番号インジケーター
+  document.querySelectorAll('.lane-indicator').forEach(e=>e.remove());
+  for(let i=0;i<ROWS;i++){
+    const ind=document.createElement('div');ind.className='lane-indicator';
+    ind.textContent=i+1;
+    ind.style.top=(laneH*i+laneH/2)+'px';
+    ll.appendChild(ind);
   }
 }
 
 function buildBg(){
   buildLaneLines();
   document.querySelectorAll('.cloud').forEach(c=>c.remove());
-  [{w:100,h:32,top:'5%',dur:22,delay:-5},{w:150,h:42,top:'14%',dur:30,delay:-13},{w:75,h:26,top:'3%',dur:17,delay:-2}].forEach(c=>{
+  [{w:110,h:34,top:'5%',dur:22,delay:-5},{w:160,h:44,top:'15%',dur:30,delay:-14},{w:80,h:28,top:'3%',dur:18,delay:-2}].forEach(c=>{
     const el=document.createElement('div');el.className='cloud';
     el.style.cssText=`width:${c.w}px;height:${c.h}px;top:${c.top};animation-duration:${c.dur}s;animation-delay:${c.delay}s`;
-    appEl.appendChild(el);
+    wrapEl.appendChild(el);
   });
   const mtn=document.getElementById('mountains');mtn.innerHTML='';
-  [{l:'3%',w:180,h:90,c:'#8FBC8F'},{l:'20%',w:220,h:110,c:'#7AAD7A'},{l:'42%',w:160,h:80,c:'#9BCB9B'},{l:'62%',w:200,h:100,c:'#82B882'},{l:'82%',w:150,h:75,c:'#A0C8A0'}].forEach(p=>{
+  [{l:'3%',w:180,h:90,c:'#7AAD7A'},{l:'22%',w:220,h:110,c:'#68A068'},{l:'44%',w:160,h:80,c:'#8FBC8F'},{l:'64%',w:200,h:100,c:'#78B278'},{l:'83%',w:150,h:75,c:'#96C896'}].forEach(p=>{
     const d=document.createElement('div');d.className='mtn';
     d.style.cssText=`left:${p.l};border-left-width:${p.w/2}px;border-right-width:${p.w/2}px;border-bottom-width:${p.h}px;border-bottom-color:${p.c}`;
     mtn.appendChild(d);
   });
   document.querySelectorAll('.tree').forEach(t=>t.remove());
+  const groundTop=getGameH()*0.58;
   ['🌳','🌲','🌴','🌳','🌲'].forEach(emoji=>{
     const t=document.createElement('div');t.className='tree';t.textContent=emoji;
+    t.style.bottom=(getGameH()-groundTop+10)+'px';
     const dur=7+Math.random()*5;
-    t.style.cssText=`animation-duration:${dur}s;animation-delay:${-dur*Math.random()}s`;
-    appEl.appendChild(t);
+    t.style.cssText+=`;animation-duration:${dur}s;animation-delay:${-dur*Math.random()}s`;
+    wrapEl.appendChild(t);
   });
 }
 
+// ══ ゲーム開始 ══
 function startGame(){
   score=0;lives=3;combo=0;carRow=1;
   items.forEach(i=>i.el&&i.el.remove());
@@ -325,6 +494,7 @@ function startGame(){
 }
 function restartGame(){document.getElementById('gameover-overlay').style.display='none';startGame();}
 
+// ══ ループ ══
 function loop(ts){
   if(!gameRunning)return;
   if(!lastTime)lastTime=ts;
@@ -337,12 +507,12 @@ function loop(ts){
   }
   spawnTimer+=dt;
   if(spawnTimer>=spawnInterval){spawnTimer=0;spawnItem();spawnInterval=Math.max(480,spawnInterval-8);}
-  const carX=60+45;
+  const carX=55+50;
   items.forEach(item=>{
     item.x-=item.speed*dt/1000;item.el.style.left=item.x+'px';
     if(!item.hit){
       const iy=getRowY(item.row),cy=getRowY(carRow);
-      if(Math.abs(item.x+17-carX)<48&&Math.abs(iy-cy)<22){item.hit=true;handleHit(item);}
+      if(Math.abs(item.x+18-carX)<52&&Math.abs(iy-cy)<24){item.hit=true;handleHit(item);}
     }
     if(item.x<-80){item.el.remove();item.done=true;}
   });
@@ -359,25 +529,24 @@ function spawnItem(){
   else pool=ITEMS.filter(i=>i.type==='bad');
   const def=pool[Math.floor(Math.random()*pool.length)];
   const el=document.createElement('div');el.className='item';el.textContent=def.emoji;
-  const x=appEl.clientWidth+10;
-  el.style.left=x+'px';el.style.top=(getRowY(row)-17)+'px';
-  appEl.appendChild(el);
+  const x=getGameW()+10;
+  el.style.left=x+'px';el.style.top=(getRowY(row)-18)+'px';
+  wrapEl.appendChild(el);
   const speed=220+Math.random()*70+((1100-spawnInterval)*0.25);
   items.push({row,x,speed,el,def,hit:false,done:false});
 }
 
 function handleHit(item){
-  const px=item.x+17,py=getRowY(item.row)-28;
+  const px=item.x+18,py=getRowY(item.row)-30;
   if(item.def.type==='meat'){
     combo++;
     const pts=item.def.pts*(combo>=3?combo:1);
     score=Math.max(0,score+pts);updateHUD();
-    showPop('+'+pts+(combo>=3?' ×'+combo+'🔥':''),px,py,'#E74C3C');
+    showPop('+'+pts+(combo>=3?' ×'+combo+'🔥':''),px,py,'#FF6B35');
     if(combo>=3){comboEl.textContent='肉コンボ×'+combo+'🔥';comboEl.classList.add('show');clearTimeout(window._ct);window._ct=setTimeout(()=>comboEl.classList.remove('show'),900);}
   }else if(item.def.type==='food'){
     combo=0;comboEl.classList.remove('show');
-    score=Math.max(0,score+item.def.pts);updateHUD();
-    showPop('+'+item.def.pts,px,py,'#4CAF50');
+    score=Math.max(0,score+item.def.pts);updateHUD();showPop('+'+item.def.pts,px,py,'#4CAF50');
   }else{
     combo=0;comboEl.classList.remove('show');
     score=Math.max(0,score+item.def.pts);lives=Math.max(0,lives-1);updateHUD();
@@ -390,7 +559,7 @@ function handleHit(item){
 function doFlash(){flashEl.classList.add('show');setTimeout(()=>flashEl.classList.remove('show'),130);}
 function showPop(text,x,y,color){
   const p=document.createElement('div');p.className='pop';p.textContent=text;p.style.color=color;p.style.left=x+'px';p.style.top=y+'px';
-  appEl.appendChild(p);setTimeout(()=>p.remove(),750);
+  wrapEl.appendChild(p);setTimeout(()=>p.remove(),750);
 }
 function updateHUD(){
   document.getElementById('score-v').textContent=score;
@@ -407,13 +576,14 @@ async function endGame(){
   document.getElementById('gameover-overlay').style.display='flex';
 }
 
+// ══ ボタン ══
 function setupBtn(id,isUp){
   const btn=document.getElementById(id);
   const go=()=>{if(isUp){if(gameRunning&&carRow>0){carRow--;setCarPos();}}else{if(gameRunning&&carRow<ROWS-1){carRow++;setCarPos();}}};
-  const down=e=>{e.preventDefault();btn.classList.add('pressing');if(isUp)pressUp=true;else pressDown=true;go();};
+  const dn=e=>{e.preventDefault();btn.classList.add('pressing');if(isUp)pressUp=true;else pressDown=true;go();};
   const up=e=>{e.preventDefault();btn.classList.remove('pressing');if(isUp)pressUp=false;else pressDown=false;};
-  btn.addEventListener('touchstart',down,{passive:false});btn.addEventListener('touchend',up,{passive:false});
-  btn.addEventListener('mousedown',down);btn.addEventListener('mouseup',up);
+  btn.addEventListener('touchstart',dn,{passive:false});btn.addEventListener('touchend',up,{passive:false});
+  btn.addEventListener('mousedown',dn);btn.addEventListener('mouseup',up);
 }
 setupBtn('btn-up',true);setupBtn('btn-down',false);
 
@@ -423,22 +593,17 @@ document.addEventListener('keydown',e=>{
 });
 document.addEventListener('keyup',e=>{if(e.key==='ArrowUp')pressUp=false;if(e.key==='ArrowDown')pressDown=false;});
 
+// スワイプ
 let swY=null;
-appEl.addEventListener('touchstart',e=>{if(e.target.id==='btn-up'||e.target.id==='btn-down')return;swY=e.touches[0].clientY;},{passive:true});
-appEl.addEventListener('touchend',e=>{
+wrapEl.addEventListener('touchstart',e=>{if(e.target.id==='btn-up'||e.target.id==='btn-down')return;swY=e.touches[0].clientY;},{passive:true});
+wrapEl.addEventListener('touchend',e=>{
   if(swY===null||!gameRunning)return;
   const dy=e.changedTouches[0].clientY-swY;
   if(Math.abs(dy)>22){if(dy<0&&carRow>0){carRow--;setCarPos();}else if(dy>0&&carRow<ROWS-1){carRow++;setCarPos();}}
   swY=null;
 },{passive:true});
 
-window.addEventListener('resize',()=>{buildLaneLines();setCarPos();items.forEach(i=>i.el.style.top=(getRowY(i.row)-17)+'px');});
 document.getElementById('input-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-
-// 画像が読めない場合の代替
-document.getElementById('car').addEventListener('error',function(){
-  this.outerHTML='<div id="car" style="position:absolute;left:60px;z-index:30;font-size:52px;line-height:1;transition:top .1s cubic-bezier(.4,0,.2,1);">🐄🚗</div>';
-});
 </script>
 </body>
 </html>
